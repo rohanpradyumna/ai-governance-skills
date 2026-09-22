@@ -1,10 +1,42 @@
 # ai-governance-skills
 
-Agent Skills for writing a company's AI policy and AI governance framework — including rules for AI **agents**, not just chatbots.
+**Give your coding agent the ability to draft your company's AI governance program — the whole thing, not a boilerplate PDF.**
 
+[![License: MIT](https://img.shields.io/github/license/rohanpradyumna/ai-governance-skills)](LICENSE)
+[![Agent Skills format](https://img.shields.io/badge/format-Agent%20Skills-6366f1)](https://agentskills.io)
+[![Regulatory snapshot](https://img.shields.io/badge/regulatory%20snapshot-Sept%202026-informational)](skills/ai-policy/references/regulatory-landscape.md)
 [![skills.sh](https://skills.sh/b/rohanpradyumna/ai-governance-skills)](https://skills.sh/rohanpradyumna/ai-governance-skills)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
 
 Works with Claude Code, Cursor, Codex, GitHub Copilot, Gemini CLI, Windsurf, Cline, Amp and any agent that supports the [Agent Skills](https://agentskills.io) format.
+
+## Why
+
+Most companies' AI policy is one of two things: nothing, or a PDF from 2023 that has never heard of an agent that can open a PR, spend money, or email a customer on the company's behalf. Regulators, auditors and enterprise procurement teams now ask "how do you govern your AI" as a standard question — and "we don't really have that written down" is not an answer anyone wants to give twice.
+
+This isn't a fill-in-the-company-name policy generator. It tiers every AI system you actually run, cites the specific NIST/ISO/EU AI Act clause behind every requirement, and tells you exactly which items still need a lawyer's signature instead of pretending to be one.
+
+## What it does
+
+```mermaid
+flowchart LR
+    Q["8-question intake"] --> T["Tier every AI system<br/>NIST AI RMF risk score"]
+    T --> D["Draft the document set<br/>policy → standards → registers → procedures"]
+    D --> R["Self-review against checklist<br/>+ framework coverage matrix"]
+    R --> O["Deliverable:<br/>docs + 90-day plan + legal handoff list"]
+    M["ai-rmf skill<br/>MAP → MEASURE → MANAGE<br/>fairness · robustness · explainability"] -. findings feed Part 4/5 .-> D
+
+    classDef skill fill:#6366f1,stroke:#4338ca,color:#fff
+    class M skill
+```
+
+Two skills, one job split cleanly in two:
+
+| | [`ai-policy`](skills/ai-policy) | [`ai-rmf`](skills/ai-rmf) |
+|---|---|---|
+| Answers | "What should our AI rules *be*?" | "Does this specific AI system actually *pass*?" |
+| Produces | The governance document set — policy, standards, registers, procedures | Per-system fairness / robustness / explainability / privacy findings |
+| Owns regulatory facts | Yes — the single source of truth | No — defers to `ai-policy` so the two never drift apart |
 
 ## Install
 
@@ -16,13 +48,11 @@ npx skills add rohanpradyumna/ai-governance-skills
 npx skills add rohanpradyumna/ai-governance-skills -g
 ```
 
-Then ask your agent for an AI policy. The skill activates on requests like *"write our AI usage policy"*, *"build an AI governance framework"*, *"set guardrails for our support agents"*, *"map our AI policy to NIST and ISO 42001"*.
+Then just ask. Both skills activate on requests like *"write our AI usage policy"*, *"build an AI governance framework"*, *"set guardrails for our support agents"*, *"map our AI policy to NIST and ISO 42001"*, or *"evaluate this model for bias."*
 
-## Skills
+## `ai-policy` — the governance document set
 
-### `ai-policy`
-
-Takes a company from *"we should probably have an AI policy"* to a coherent document **set**: policy → standards → registers → procedures. It runs a short intake (≤ 8 questions), tiers every AI system by risk, drafts from templates, self-reviews against a checklist, and produces a framework coverage matrix plus a legal-review handoff list.
+Takes a company from *"we should probably have an AI policy"* to a coherent document set: policy → standards → registers → procedures. Runs a short intake (≤ 8 questions), tiers every AI system by risk, drafts from templates, self-reviews against a checklist, and produces a framework coverage matrix plus a legal-review handoff list.
 
 **What it produces** (depending on chosen depth — Starter / Standard / Comprehensive):
 
@@ -48,12 +78,13 @@ Takes a company from *"we should probably have an AI policy"* to a coherent docu
 - UK, Singapore (IMDA Model AI Governance Framework for **Agentic AI**, 2026), South Korea, China, others in brief
 - OWASP Top 10 for Agentic Applications (2026) and for LLM Applications (2025), MITRE ATLAS, CSA AICM
 
-**Structure**
+<details>
+<summary><strong>Folder structure</strong></summary>
 
 ```
 skills/ai-policy/
 ├── SKILL.md                  # workflow, writing rules, agentic minimums, gotchas
-├── references/               # loaded on demand
+├── references/                # loaded on demand
 │   ├── regulatory-landscape.md   # dated, with "policy clause implication" per rule
 │   ├── frameworks-crosswalk.md   # NIST ↔ ISO 42001 ↔ EU AI Act ↔ IMDA ↔ OWASP by policy section
 │   ├── agentic-ai-controls.md    # autonomy scale, action classes, control catalogue A–G
@@ -63,21 +94,26 @@ skills/ai-policy/
 │   ├── vendor-and-procurement.md
 │   ├── review-checklist.md
 │   └── sources.md                # primary sources only
-└── assets/                   # fill-in templates with {{placeholders}}
+└── assets/                    # fill-in templates with {{placeholders}}
 ```
 
-### `ai-rmf`
+</details>
 
-Companion to `ai-policy`. Where `ai-policy` drafts the governance *document set*, `ai-rmf` does the technical NIST AI RMF **MAP → MEASURE → MANAGE** work on a specific AI/ML system: fairness and bias testing, robustness/adversarial evaluation, explainability and model cards, privacy leakage, and accuracy per data slice. Its findings feed straight into `ai-policy`'s `assets/ai-risk-assessment.md` (Parts 4, 5, 9, 10) — it deliberately carries no regulatory facts of its own, deferring to `ai-policy`'s `references/regulatory-landscape.md` so the two never drift out of sync.
+## `ai-rmf` — the technical evaluation companion
 
-Use it when the ask is "evaluate this model/system for bias/fairness/robustness" rather than "write our AI policy."
+Where `ai-policy` drafts the governance *document set*, `ai-rmf` does the technical NIST AI RMF **MAP → MEASURE → MANAGE** work on a specific AI/ML system: fairness and bias testing, robustness/adversarial evaluation, explainability and model cards, privacy leakage, and accuracy per data slice. Its findings feed straight into `ai-policy`'s `assets/ai-risk-assessment.md` (Parts 4, 5, 9, 10) — it deliberately carries no regulatory facts of its own, deferring to `ai-policy`'s `references/regulatory-landscape.md` so the two never drift out of sync.
 
-**Structure**
+Use it when the ask is "evaluate this model/system for bias/fairness/robustness" rather than "write our AI policy." Works standalone too, with its own lightweight output format, if you only need the technical read.
+
+<details>
+<summary><strong>Folder structure</strong></summary>
 
 ```
 skills/ai-rmf/
 └── SKILL.md   # MAP/MEASURE/MANAGE workflow, fairness/robustness/explainability methodology and tooling, boundaries
 ```
+
+</details>
 
 ## Example prompts
 
